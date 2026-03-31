@@ -1,6 +1,9 @@
 {
   "name": "auth-server",
   "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
   "dependencies": {
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",

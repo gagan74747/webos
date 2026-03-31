@@ -1,0 +1,10 @@
+{
+  "id": "com.astro.cookie.poc",
+  "version": "1.0.0",
+  "vendor": "AstroGo",
+  "type": "web",
+  "title": "AstroGo Cookie POC",
+  "main": "index.html",
+  "icon": "icon.png",
+  "largeIcon": "largeIcon.png"
+}
