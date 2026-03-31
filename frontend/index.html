@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>test.my</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        max-width: 400px;
+        margin: 60px auto;
+      }
+      input {
+        display: block;
+        margin: 8px 0;
+        padding: 8px;
+        width: 100%;
+      }
+      button {
+        margin: 6px 4px 6px 0;
+        padding: 8px 16px;
+        cursor: pointer;
+      }
+      #status {
+        margin-top: 20px;
+        padding: 12px;
+        background: #f0f0f0;
+        border-radius: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>App (test.my)</h2>
+
+    <input id="username" placeholder="Username (alice / bob)" />
+    <input id="password" placeholder="Password" type="password" />
+    <button onclick="login()">Login</button>
+    <button onclick="refresh()">Refresh Token</button>
+    <button onclick="logout()">Logout</button>
+
+    <div id="status">Not logged in.</div>
+
+    <script>
+      const AUTH = "https://abc-abc.test.my:9443";
+
+      // In-memory only — lost on tab close (intentionally)
+      let accessToken = null;
+
+      function show(msg) {
+        document.getElementById("status").innerText = msg;
+      }
+
+      async function login() {
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+        const res = await fetch(`${AUTH}/oauth2/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include", // allows cookie to be set cross-origin
+          body: JSON.stringify({ username, password }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) return show("Login failed: " + data.error);
+
+        accessToken = data.accessToken;
+        show(`Logged in! Access token (in memory):\n${accessToken}`);
+      }
+
+      async function refresh() {
+        // test.my cannot see the cookie — but the browser sends it automatically
+        const res = await fetch(`${AUTH}/oauth2/token`, {
+          method: "POST",
+          credentials: "include", // browser attaches cookie automatically
+        });
+
+        const data = await res.json();
+        if (!res.ok) return show("Refresh failed: " + data.error);
+
+        accessToken = data.accessToken;
+        // show(`Token refreshed!\n${accessToken}`);
+        show(`Test Cookie!\n${data.testCookie}`);
+      }
+
+      async function logout() {
+        await fetch(`${AUTH}/oauth2/logout`, {
+          method: "POST",
+          credentials: "include",
+        });
+        accessToken = null;
+        show("Logged out.");
+      }
+
+      // On page load — try to silently restore session
+      window.onload = () => refresh().catch(() => show("No active session."));
+    </script>
+  </body>
+</html>
