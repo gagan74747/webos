@@ -10,7 +10,7 @@ import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
-const PORT = process.env.PORT || 9443;
+const PORT = process.env.PORT || 8080;
 
 const ACCESS_SECRET = "access-secret";
 const REFRESH_SECRET = "refresh-secret";
@@ -24,7 +24,7 @@ const USERS = {
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-  origin: "https://test.my:3000",
+  origin: "https://webos-f8dj.onrender.com",
   credentials: true,               // required for cookies to flow cross-origin
 }));
 
@@ -62,7 +62,7 @@ app.post("/oauth2/login", (req, res) => {
   // Set refresh token as HttpOnly cookie
   res.cookie("refresh_token", refreshToken, {
   httpOnly: true,
-  domain: "abc-abc.test.my",
+  domain: "webos-f8dj.onrender.com",
   path: "/oauth2",
   secure: true,        // ← enable this now
   sameSite: "strict",
@@ -70,7 +70,7 @@ app.post("/oauth2/login", (req, res) => {
 
 res.cookie("test_cookie", `Avinash Arora ${new Date().toISOString()}`, {
   httpOnly: true,
-  domain: "abc-abc.test.my",
+  domain: "webos-f8dj.onrender.com",
   path: "/oauth2",
   secure: true,        // ← enable this now
   sameSite: "strict",
@@ -105,7 +105,7 @@ app.post("/oauth2/token", (req, res) => {
 // --- POST /oauth2/logout ---
 app.post("/oauth2/logout", (req, res) => {
   res.clearCookie("refresh_token", {
-    domain: "abc-abc.test.my",
+    domain: "webos-f8dj.onrender.com",
     path: "/oauth2",
   });
   res.json({ message: "Logged out" });
@@ -116,4 +116,4 @@ app.post("/oauth2/logout", (req, res) => {
 //   cert: fs.readFileSync("./certs/abc-abc.test.my.pem"),
 // }, app).listen(9443, () => console.log("Auth server on https://abc-abc.test.my:9443"));
 
-app.listen(8080, () => console.log("Server on http://localhost:8080"));
+app.listen(PORT, () => console.log(`Server on port ${PORT}`));

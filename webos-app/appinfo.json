@@ -4,7 +4,7 @@
   "vendor": "AstroGo",
   "type": "web",
   "title": "AstroGo Cookie POC",
-  "main": "index.html",
+  "main": "https://webos-f8dj.onrender.com/",
   "icon": "icon.png",
   "largeIcon": "largeIcon.png"
 }
