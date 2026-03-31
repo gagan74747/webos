@@ -4,9 +4,13 @@ import cors from "cors";
 import jwt from "jsonwebtoken";
 import https from "https";
 import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
-const PORT = 9443;
+const PORT = process.env.PORT || 9443;
 
 const ACCESS_SECRET = "access-secret";
 const REFRESH_SECRET = "refresh-secret";
@@ -23,6 +27,9 @@ app.use(cors({
   origin: "https://test.my:3000",
   credentials: true,               // required for cookies to flow cross-origin
 }));
+
+// Serve frontend static files
+app.use(express.static(path.join(__dirname, "frontend")));
 
 // Just to make the domain reachable in browser so you can inspect cookies
 app.get("/oauth2", (req, res) => {
@@ -58,7 +65,7 @@ app.post("/oauth2/login", (req, res) => {
   domain: "abc-abc.test.my",
   path: "/oauth2",
   secure: true,        // ← enable this now
-  sameSite: "lax",
+  sameSite: "strict",
 });
 
 res.cookie("test_cookie", `Avinash Arora ${new Date().toISOString()}`, {
@@ -66,7 +73,7 @@ res.cookie("test_cookie", `Avinash Arora ${new Date().toISOString()}`, {
   domain: "abc-abc.test.my",
   path: "/oauth2",
   secure: true,        // ← enable this now
-  sameSite: "lax",
+  sameSite: "strict",
 });
 
   res.json({ accessToken });
