@@ -111,7 +111,9 @@ app.post("/oauth2/logout", (req, res) => {
   res.json({ message: "Logged out" });
 });
 
-https.createServer({
-  key:  fs.readFileSync("./certs/abc-abc.test.my-key.pem"),
-  cert: fs.readFileSync("./certs/abc-abc.test.my.pem"),
-}, app).listen(9443, () => console.log("Auth server on https://abc-abc.test.my:9443"));
+// https.createServer({
+//   key:  fs.readFileSync("./certs/abc-abc.test.my-key.pem"),
+//   cert: fs.readFileSync("./certs/abc-abc.test.my.pem"),
+// }, app).listen(9443, () => console.log("Auth server on https://abc-abc.test.my:9443"));
+
+app.listen(8080, () => console.log("Server on http://localhost:8080"));
