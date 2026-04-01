@@ -24,7 +24,7 @@ const USERS = {
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-  origin: "https://webos-f8dj.onrender.com",
+  origin: "https://webos-test-main.onrender.com",
   credentials: true,               // required for cookies to flow cross-origin
 }));
 
