@@ -62,7 +62,7 @@ app.post("/oauth2/login", (req, res) => {
   // Set refresh token as HttpOnly cookie
   res.cookie("refresh_token", refreshToken, {
   httpOnly: true,
-  domain: "webos-f8dj.onrender.com",
+  domain: "webos-test-main.onrender.com",
   path: "/oauth2",
   secure: true,        // ← enable this now
   sameSite: "lax",
@@ -70,7 +70,7 @@ app.post("/oauth2/login", (req, res) => {
 
 res.cookie("test_cookie", `Avinash Arora ${new Date().toISOString()}`, {
   httpOnly: true,
-  domain: "webos-f8dj.onrender.com",
+  domain: "webos-test-main.onrender.com",
   path: "/oauth2",
   secure: true,        // ← enable this now
   sameSite: "lax",
@@ -105,7 +105,7 @@ app.post("/oauth2/token", (req, res) => {
 // --- POST /oauth2/logout ---
 app.post("/oauth2/logout", (req, res) => {
   res.clearCookie("refresh_token", {
-    domain: "webos-f8dj.onrender.com",
+    domain: "webos-test-main.onrender.com",
     path: "/oauth2",
   });
   res.json({ message: "Logged out" });
