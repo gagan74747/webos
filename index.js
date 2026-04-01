@@ -1,13 +1,8 @@
+import "dotenv/config";
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import jwt from "jsonwebtoken";
-import https from "https";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -21,22 +16,32 @@ const USERS = {
   bob:   { password: "pass456", id: "u2", name: "Bob"   },
 };
 
+/** Subdomain A — comma-separated origins, e.g. https://app.example.com */
+const FRONTEND_URLS = (process.env.FRONTEND_URL || "")
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
+
+/** Subdomain B — full base URL; cookie Domain = hostname of this URL */
+let COOKIE_DOMAIN = "";
+try {
+  if (process.env.BACKEND_URL) {
+    COOKIE_DOMAIN = new URL(process.env.BACKEND_URL).hostname;
+  }
+} catch {
+  COOKIE_DOMAIN = "";
+}
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-  origin: [
-    "https://webos-test-main.onrender.com",
-    "https://webos-f8dj.onrender.com"
-  ],
-  credentials: true, // Required for cookies to flow cross-origin
+  origin: FRONTEND_URLS.length ? FRONTEND_URLS : false,
+  credentials: true,               // required for cookies to flow cross-origin
 }));
-
-// Serve frontend static files
-app.use(express.static(path.join(__dirname, "frontend")));
 
 // Just to make the domain reachable in browser so you can inspect cookies
 app.get("/oauth2", (req, res) => {
-    console.log("Cookies received at /oauth2:", req.cookies);
+    console.log("Cookies received at /oauth2:", req.cookies, process.env.BACKEND_URL, process.env.FRONTEND_URL);
   res.send("<h1>Auth Server</h1>");
 });
 
@@ -65,18 +70,18 @@ app.post("/oauth2/login", (req, res) => {
   // Set refresh token as HttpOnly cookie
   res.cookie("refresh_token", refreshToken, {
   httpOnly: true,
-  domain: "webos-test-main.onrender.com",
   path: "/oauth2",
   secure: true,        // ← enable this now
   sameSite: "lax",
+  ...(COOKIE_DOMAIN && { domain: COOKIE_DOMAIN }),
 });
 
 res.cookie("test_cookie", `Avinash Arora ${new Date().toISOString()}`, {
   httpOnly: true,
-  domain: "webos-test-main.onrender.com",
   path: "/oauth2",
   secure: true,        // ← enable this now
   sameSite: "lax",
+  ...(COOKIE_DOMAIN && { domain: COOKIE_DOMAIN }),
 });
 
   res.json({ accessToken });
@@ -108,15 +113,10 @@ app.post("/oauth2/token", (req, res) => {
 // --- POST /oauth2/logout ---
 app.post("/oauth2/logout", (req, res) => {
   res.clearCookie("refresh_token", {
-    domain: "webos-test-main.onrender.com",
     path: "/oauth2",
+    ...(COOKIE_DOMAIN && { domain: COOKIE_DOMAIN }),
   });
   res.json({ message: "Logged out" });
 });
-
-// https.createServer({
-//   key:  fs.readFileSync("./certs/abc-abc.test.my-key.pem"),
-//   cert: fs.readFileSync("./certs/abc-abc.test.my.pem"),
-// }, app).listen(9443, () => console.log("Auth server on https://abc-abc.test.my:9443"));
 
 app.listen(PORT, () => console.log(`Server on port ${PORT}`));
