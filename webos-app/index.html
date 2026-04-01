@@ -1,33 +1,10 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
     <meta charset="UTF-8" />
+    <!-- webOS requires a local entry HTML; hosted app pattern = instant redirect to deployed URL. -->
+    <meta http-equiv="refresh" content="0;url=https://webos-f8dj.onrender.com/" />
     <title>AstroGo Cookie POC</title>
-    <style>
-      body {
-        margin: 0;
-        background: #111;
-        color: #fff;
-        font-family: sans-serif;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-      }
-    </style>
-    <script>
-      // ========================================
-      // PASTE YOUR RENDER URL BELOW (no trailing slash)
-      // e.g. "https://astrogo-cookie-poc.onrender.com"
-      // ========================================
-      var RENDER_URL = "https://webos-f8dj.onrender.com/";
-
-      if (RENDER_URL && RENDER_URL !== "PASTE_RENDER_URL_HERE") {
-        window.location.replace(RENDER_URL);
-      }
-    </script>
   </head>
-  <body>
-    <h1>Set RENDER_URL in index.html</h1>
-  </body>
+  <body></body>
 </html>

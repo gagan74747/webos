@@ -65,7 +65,7 @@ app.post("/oauth2/login", (req, res) => {
   domain: "webos-f8dj.onrender.com",
   path: "/oauth2",
   secure: true,        // ← enable this now
-  sameSite: "strict",
+  sameSite: "lax",
 });
 
 res.cookie("test_cookie", `Avinash Arora ${new Date().toISOString()}`, {
@@ -73,7 +73,7 @@ res.cookie("test_cookie", `Avinash Arora ${new Date().toISOString()}`, {
   domain: "webos-f8dj.onrender.com",
   path: "/oauth2",
   secure: true,        // ← enable this now
-  sameSite: "strict",
+  sameSite: "lax",
 });
 
   res.json({ accessToken });
